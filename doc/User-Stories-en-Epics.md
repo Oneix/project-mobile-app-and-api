@@ -1,7 +1,10 @@
 # User Stories en Epics - Messaging App
 
 ## Project Overzicht
+**Mohammad Aldeeb - Schoolproject**  
 Een moderne mobiele messaging app gebouwd met Flutter (frontend) en C# .NET 8 Web API (backend) met MySQL database.
+
+Dit is mijn 2-weekse intensive schoolproject waarin ik alle functionaliteiten ga implementeren voor een complete messaging applicatie.
 
 ## Epics Overzicht
 
@@ -653,29 +656,25 @@ Een moderne mobiele messaging app gebouwd met Flutter (frontend) en C# .NET 8 We
 
 ---
 
-## Development Plan
+## Development Prioriteiten
 
-### Fase 1: Basis Setup (Week 1-2)
-- Project structuur opzetten
-- Database schema implementeren
-- Basis authenticatie (backend + frontend)
-- Basis navigatie in Flutter app
+### Hoge Prioriteit - Must Have
+- **Epic 1:** Gebruiker Authenticatie - Basis voor alles
+- **Epic 2:** Vrienden Beheer - Nodig voor chatten
+- **Epic 3:** Persoonlijk Chatten - Kernfunctionaliteit
 
-### Fase 2: Core Functionaliteit (Week 3-4)
-- Vrienden beheer
-- Privé chat functionaliteit
-- Basis bericht verzenden/ontvangen
+### Gemiddelde Prioriteit - Should Have
+- **Epic 4:** Groepschat Beheer - Extra functionaliteit
+- **Epic 5:** Bericht Beheer - Gebruikerservaring verbeteren
 
-### Fase 3: Uitgebreide Features (Week 5-6)
-- Groepschats
-- Bericht bewerken/verwijderen
-- Real-time functionaliteit
+### Lage Prioriteit - Could Have
+- **Epic 6:** Profiel Beheer - Nice-to-have features
 
-### Fase 4: Polish & Testing (Week 7-8)
-- Profiel beheer
-- UI/UX verbeteren
-- Testing en bug fixes
-- Documentatie afmaken
+### Development Aanpak
+- Parallel development: Backend API's en Frontend schermen tegelijk
+- Intensive 2-weekse sprint met dagelijkse commits
+- Focus op werkende MVP eerste, daarna features toevoegen
+- Real-time functionaliteit als laatste (complexiteit)
 
 ---
 
@@ -692,20 +691,45 @@ Voor elke User Story:
 
 ---
 
-## Risico's en Mitigatie
+## 2-Weekse Project Strategie
 
-**Risico:** Real-time functionaliteit is complex
-**Mitigatie:** Begin met basis polling, upgrade later naar SignalR
+### Week 1 Focus: Foundation & Core
+- Setup en authenticatie systeem volledig werkend
+- Database schema en basis API endpoints
+- Flutter project structuur en navigatie
+- Vrienden systeem implementeren
+- Begin met basis chat functionaliteit
 
-**Risico:** Parallel development sync problemen
-**Mitigatie:** Duidelijke API contracts afspreken vooraf
+### Week 2 Focus: Features & Polish  
+- Chat functionaliteit afmaken (privé + groep)
+- Bericht beheer features
+- Real-time implementatie
+- Profiel beheer
+- UI/UX polish en testing
 
-**Risico:** Database performance bij veel berichten
-**Mitigatie:** Paginatie en indexing implementeren
+### Intensive Workflow
+- **Dagelijkse commits** - Continue progress tracking
+- **MVP eerst** - Werkende basis voor uitbreidingen
+- **Parallel development** - Frontend en backend tegelijk
+- **Pragmatisch** - Simpele oplossingen die werken
 
-**Risico:** Mobile platform specifieke problemen
-**Mitigatie:** Regelmatig testen op beide platforms
+### Risico Management
+**Real-time complexity:** Start met polling, upgrade naar SignalR
+**Time pressure:** Focus op core features eerst
+**Technical debt:** Document decisions voor toekomstige verbeteringen
+**Platform issues:** Test regelmatig op beide Android/iOS
+
+### Success Metrics
+- [ ] Gebruikers kunnen registreren/inloggen
+- [ ] Vrienden toevoegen/verwijderen werkt
+- [ ] Privé berichten verzenden/ontvangen
+- [ ] Groepschats aanmaken en gebruiken
+- [ ] Berichten bewerken/verwijderen
+- [ ] Real-time updates (minimaal basis)
+- [ ] Responsive UI op mobiel
+- [ ] Werkende deployment
 
 ---
 
-*Dit document is een levend document en wordt bijgewerkt tijdens de ontwikkeling van het project.*
+**Mohammad Aldeeb - 2-Week Intensive School Project**  
+*"Intensive development, maximum learning, working solution"*
