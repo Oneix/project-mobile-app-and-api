@@ -45,7 +45,6 @@ Als backend ontwikkelaar wil ik gebruikers kunnen zoeken zodat mensen nieuwe vri
 
 **US2.5: Vrienden Lijst Scherm**
 Als gebruiker wil ik mijn vrienden kunnen zien zodat ik weet met wie ik kan chatten
-<img width="360" height="360" alt="pngtree-test-red-flat-icon-isolated-product-png-image_10722512" src="https://github.com/user-attachments/assets/c4072337-d0f0-412d-9329-397ec1d10a17" />
 
 **US2.6: Vriend Toevoegen Scherm**
 Als gebruiker wil ik nieuwe vrienden kunnen toevoegen zodat ik met meer mensen kan chatten
