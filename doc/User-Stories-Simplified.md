@@ -1,4 +1,4 @@
-# User Stories - Messaging App (Simplified)
+# User Stories - Messaging App
 
 **Mohammad Aldeeb - Schoolproject**
 
