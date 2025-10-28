@@ -9,8 +9,6 @@
 **US1.1: Gebruiker Registratie API**
 Als backend ontwikkelaar wil ik een registratie endpoint maken zodat nieuwe gebruikers een account kunnen aanmaken
 
-![alt text](https://promate.gg/assets/logo.png)
-
 **US1.2: Gebruiker Inlog API**
 Als backend ontwikkelaar wil ik een inlog endpoint maken zodat bestaande gebruikers kunnen inloggen
 
