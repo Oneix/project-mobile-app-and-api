@@ -54,28 +54,27 @@ Als gebruiker wil ik direct nieuwe berichten zien zodat het aanvoelt als een ech
 
 **US4.5: Groep Aanmaken Scherm**
 Als gebruiker wil ik een groep kunnen aanmaken zodat ik met meerdere vrienden tegelijk kan chatten
+<img width="1763" height="1920" alt="group creation page and group list page" src="https://github.com/user-attachments/assets/a1254122-007b-43e8-b420-34a36b10a31e" />
 
 **US4.6: Groep Chat Scherm**
 Als gebruiker wil ik in groepen kunnen chatten zodat ik met meerdere mensen tegelijk kan praten
+<img width="1763" height="1920" alt="Group chat" src="https://github.com/user-attachments/assets/a5142a0c-e006-40b0-9f26-1d0f9174c5a0" />
 
 **US4.7: Groep Leden Beheren Scherm**
 Als groep admin wil ik leden kunnen toevoegen en verwijderen zodat ik de groep kan beheren
-
-**US4.8: Groep Instellingen**
-Als groep admin wil ik groep instellingen kunnen wijzigen zodat ik de groep kan aanpassen
+<img width="1763" height="1920" alt="groep beheer" src="https://github.com/user-attachments/assets/20bb3558-6651-410c-b927-3c662a87e0a7" />
 
 ---
 
 ## Epic 5: Bericht Beheer
 
-**US5.4: Bericht Bewerken Interface**
-Als gebruiker wil ik mijn berichten kunnen bewerken zodat ik fouten kan corrigeren
-
 **US5.5: Bericht Verwijderen Interface**
 Als gebruiker wil ik mijn berichten kunnen verwijderen zodat ik ongewenste berichten kan wissen
+<img width="615" height="393" alt="image" src="https://github.com/user-attachments/assets/35a74215-49aa-462e-9e79-44d799aafee2" />
 
 **US5.6: Gelezen Status Weergave**
 Als gebruiker wil ik zien of mijn berichten gelezen zijn zodat ik weet of iemand mijn bericht heeft gezien
+<img width="563" height="136" alt="image" src="https://github.com/user-attachments/assets/27ad9082-01bb-44ad-ac22-132b23108cfc" />
 
 ---
 
@@ -83,9 +82,11 @@ Als gebruiker wil ik zien of mijn berichten gelezen zijn zodat ik weet of iemand
 
 **US6.4: Profiel Bekijken Scherm**
 Als gebruiker wil ik mijn profiel kunnen bekijken zodat ik mijn informatie kan zien
+<img width="320" height="507" alt="image" src="https://github.com/user-attachments/assets/faac77ca-e029-4fce-ba4f-a03c11edc0f7" />
 
 **US6.5: Profiel Bewerken Scherm**
 Als gebruiker wil ik mijn profiel kunnen aanpassen zodat ik mijn informatie kan bijwerken
+<img width="1763" height="1920" alt="Edit" src="https://github.com/user-attachments/assets/3f51d91d-189e-4b3d-960a-580d43a1cb4a" />
 
 **US6.6: Wachtwoord Wijzigen Scherm**
 Als gebruiker wil ik mijn wachtwoord kunnen wijzigen zodat ik mijn account veilig kan houden
