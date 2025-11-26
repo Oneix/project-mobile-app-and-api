@@ -90,6 +90,7 @@ Als gebruiker wil ik mijn profiel kunnen aanpassen zodat ik mijn informatie kan 
 
 **US6.6: Wachtwoord Wijzigen Scherm**
 Als gebruiker wil ik mijn wachtwoord kunnen wijzigen zodat ik mijn account veilig kan houden
+<img width="416" height="490" alt="image" src="https://github.com/user-attachments/assets/8d5cafe9-7a78-487a-89ed-e8522c5c2f34" />
 
 ---
 
