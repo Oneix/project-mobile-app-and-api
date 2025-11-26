@@ -9,15 +9,15 @@
 
 **US1.4: Registratie Scherm**
 Als gebruiker wil ik me kunnen registreren zodat ik een nieuw account kan maken
+<img width="1763" height="1920" alt="Register Screen" src="https://github.com/user-attachments/assets/2f0d756a-d425-4370-b06b-5ac8571f0ab9" />
 
 **US1.5: Inlog Scherm**
 Als gebruiker wil ik kunnen inloggen zodat ik toegang krijg tot de app
-
-**US1.6: Automatisch Inloggen**
-Als gebruiker wil ik automatisch ingelogd worden zodat ik niet elke keer opnieuw hoef in te loggen
+<img width="1763" height="1920" alt="login screen" src="https://github.com/user-attachments/assets/abf0f1fa-fa24-49ab-b3d1-0da99b1271aa" />
 
 **US1.7: Uitlog Functionaliteit**
 Als gebruiker wil ik kunnen uitloggen zodat ik veilig kan afsluiten
+<img width="1763" height="1920" alt="popup logout" src="https://github.com/user-attachments/assets/4a1e58fb-d7f8-40af-9e9b-d36179c1eb53" />
 
 ---
 
@@ -30,7 +30,9 @@ Als gebruiker wil ik mijn vrienden kunnen zien zodat ik weet met wie ik kan chat
 Als gebruiker wil ik nieuwe vrienden kunnen toevoegen zodat ik met meer mensen kan chatten
 
 **US2.7: Vriend Verwijderen**
-Als gebruiker wil ik vrienden kunnen verwijderen zodat ik mijn contactenlijst kan beheren
+Als gebruiker wil ik vrienden kunnen verwijderen zodat ik mijn contactenlijst kan behere
+
+<img width="1763" height="1920" alt="friends beheer" src="https://github.com/user-attachments/assets/94214541-ec69-4d7e-aff3-ec22fc37eb08" />
 
 ---
 
@@ -38,12 +40,13 @@ Als gebruiker wil ik vrienden kunnen verwijderen zodat ik mijn contactenlijst ka
 
 **US3.5: Chat Lijst Scherm**
 Als gebruiker wil ik mijn actieve chats kunnen zien zodat ik snel gesprekken kan vinden
+<img width="1763" height="1920" alt="home page consept" src="https://github.com/user-attachments/assets/f2d8df37-09ef-484e-90f4-03b427ba8c03" />
 
 **US3.6: Chat Scherm**
 Als gebruiker wil ik berichten kunnen zien en verzenden zodat ik kan communiceren met vrienden
-
 **US3.7: Real-time Berichten**
 Als gebruiker wil ik direct nieuwe berichten zien zodat het aanvoelt als een echt gesprek
+<img width="1763" height="1920" alt="user2user chat" src="https://github.com/user-attachments/assets/5395f61b-1ce3-4246-b958-12137167f31d" />
 
 ---
 
