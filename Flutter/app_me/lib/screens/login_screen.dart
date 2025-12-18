@@ -3,6 +3,7 @@ import '../widgets/custom_widgets.dart';
 import '../utils/error_handler.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -50,9 +51,13 @@ class _LoginScreenState extends State<LoginScreen> {
       await Future.delayed(const Duration(seconds: 2));
       
       // TODO: Implement actual login logic
-      // For now, just show success
+      // For now, navigate to home screen
       if (mounted) {
         ErrorHandler.showSuccess(context, 'Succesvol ingelogd!');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
       }
     } catch (e) {
       if (mounted) {

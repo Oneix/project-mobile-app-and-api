@@ -50,10 +50,10 @@ class ErrorHandler {
 class ValidationHelper {
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Email is verplicht';
+      return 'E-mailadres is verplicht';
     }
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-      return 'Voer een geldig emailadres in';
+      return 'Voer een geldig e-mailadres in';
     }
     return null;
   }
