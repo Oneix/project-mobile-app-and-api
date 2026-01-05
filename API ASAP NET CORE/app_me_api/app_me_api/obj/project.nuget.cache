@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "cx/8Uz5NpMw=",
+  "success": true,
+  "projectFilePath": "C:\\Projects\\project-mobile-app-and-api\\API ASAP NET CORE\\app_me_api\\app_me_api\\app_me_api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\aljeb\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.1\\microsoft.aspnetcore.openapi.10.0.1.nupkg.sha512",
+    "C:\\Users\\aljeb\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
