@@ -91,7 +91,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// Disable HTTPS redirection for local development
+// app.UseHttpsRedirection();
 
 app.UseCors("AllowFlutterApp");
 

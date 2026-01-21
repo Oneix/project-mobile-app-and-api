@@ -1,12 +1,54 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Projects\\project-mobile-app-and-api\\API ASAP NET CORE\\app_me_api\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5F1D0862-EE9B-97C6-3BDE-E0EE00270BA7}|app_me_api\\app_me_api.csproj|c:\\projects\\project-mobile-app-and-api\\api asap net core\\app_me_api\\app_me_api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F1D0862-EE9B-97C6-3BDE-E0EE00270BA7}|app_me_api\\app_me_api.csproj|solutionrelative:app_me_api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5F1D0862-EE9B-97C6-3BDE-E0EE00270BA7}|app_me_api\\app_me_api.csproj|c:\\projects\\project-mobile-app-and-api\\api asap net core\\app_me_api\\app_me_api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5F1D0862-EE9B-97C6-3BDE-E0EE00270BA7}|app_me_api\\app_me_api.csproj|solutionrelative:app_me_api\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Projects\\project-mobile-app-and-api\\API ASAP NET CORE\\app_me_api\\app_me_api\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "app_me_api\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Projects\\project-mobile-app-and-api\\API ASAP NET CORE\\app_me_api\\app_me_api\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "app_me_api\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAGIAAAAAAAAAAAA3wA4AAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-21T10:09:05.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Projects\\project-mobile-app-and-api\\API ASAP NET CORE\\app_me_api\\app_me_api\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "app_me_api\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Projects\\project-mobile-app-and-api\\API ASAP NET CORE\\app_me_api\\app_me_api\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "app_me_api\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-21T10:08:48.78Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

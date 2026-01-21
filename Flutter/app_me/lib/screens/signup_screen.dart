@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_widgets.dart';
 import '../utils/error_handler.dart';
+import '../services/auth_service.dart';
+import 'home_screen.dart';
 import 'forgot_password_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -49,13 +51,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      // Call actual API
+      await AuthService.register(
+        username: _usernameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
       
-      // TODO: Implement actual signup logic
+      // Navigate to home screen on success
       if (mounted) {
         ErrorHandler.showSuccess(context, 'Account succesvol aangemaakt!');
-        Navigator.pop(context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
       }
     } catch (e) {
       if (mounted) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_widgets.dart';
 import '../utils/error_handler.dart';
+import '../services/auth_service.dart';
 import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
 import 'home_screen.dart';
@@ -47,11 +48,13 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      // Call actual API
+      await AuthService.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
       
-      // TODO: Implement actual login logic
-      // For now, navigate to home screen
+      // Navigate to home screen on success
       if (mounted) {
         ErrorHandler.showSuccess(context, 'Succesvol ingelogd!');
         Navigator.pushReplacement(

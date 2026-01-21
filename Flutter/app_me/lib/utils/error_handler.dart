@@ -26,6 +26,11 @@ class ErrorHandler {
   }
 
   static String getErrorMessage(String errorCode) {
+    // If it's an Exception with a message, extract it
+    if (errorCode.startsWith('Exception: ')) {
+      return errorCode.replaceFirst('Exception: ', '');
+    }
+    
     switch (errorCode) {
       case 'invalid-email':
         return 'Het emailadres is ongeldig.';
@@ -42,7 +47,10 @@ class ErrorHandler {
       case 'network-request-failed':
         return 'Netwerkfout. Controleer je internetverbinding.';
       default:
-        return 'Er is een fout opgetreden. Probeer opnieuw.';
+        // Return the actual error message instead of generic one
+        return errorCode.contains('SocketException') 
+            ? 'Kan geen verbinding maken met de server. Controleer of de backend draait.'
+            : errorCode;
     }
   }
 }
