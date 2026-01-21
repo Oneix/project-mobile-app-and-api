@@ -129,4 +129,6 @@ C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\o
 C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\obj\Debug\net10.0\app_me_api.pdb
 C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\obj\Debug\net10.0\app_me_api.genruntimeconfig.cache
 C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\obj\Debug\net10.0\ref\app_me_api.dll
-C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\bin\Debug\net10.0\app_me_api.xml
+C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\bin\Debug\net10.0\Scalar.AspNetCore.dll
+C:\Projects\project-mobile-app-and-api\API ASAP NET CORE\app_me_api\app_me_api\obj\Debug\net10.0\app_me_api.xml

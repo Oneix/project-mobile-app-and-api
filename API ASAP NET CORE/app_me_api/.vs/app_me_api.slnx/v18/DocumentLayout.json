@@ -28,7 +28,7 @@
               "RelativeDocumentMoniker": "app_me_api\\Controllers\\AuthController.cs",
               "ToolTip": "C:\\Projects\\project-mobile-app-and-api\\API ASAP NET CORE\\app_me_api\\app_me_api\\Controllers\\AuthController.cs",
               "RelativeToolTip": "app_me_api\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAGIAAAAAAAAAAAA3wA4AAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAYwA4AAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-21T10:09:05.216Z",
               "EditorCaption": ""
@@ -43,8 +43,7 @@
               "RelativeToolTip": "app_me_api\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-21T10:08:48.78Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T10:08:48.78Z"
             }
           ]
         }

@@ -29,6 +29,12 @@ namespace app_me_api.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// register a new user account
+        /// </summary>
+        /// <remarks>
+        /// creates a new user with username, email and password. the password gets hashed before saving to database. returns a jwt token that you need to save for making authenticated requests later.
+        /// </remarks>
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request)
         {
@@ -95,6 +101,12 @@ namespace app_me_api.Controllers
             }
         }
 
+        /// <summary>
+        /// login with existing user account
+        /// </summary>
+        /// <remarks>
+        /// authenticates a user by checking their email and password. if correct, returns a jwt token that expires after 24 hours. you need to include this token in the authorization header for protected endpoints.
+        /// </remarks>
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
         {
