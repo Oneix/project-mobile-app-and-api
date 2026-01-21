@@ -46,7 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           // Custom App Bar
-          const CustomAppBar(),
+          CustomAppBar(
+            onProfileTap: () {
+              setState(() {
+                _selectedIndex = 3; // Navigate to Profile tab
+              });
+            },
+          ),
           // Tab Content
           Expanded(child: _getSelectedTabContent()),
         ],

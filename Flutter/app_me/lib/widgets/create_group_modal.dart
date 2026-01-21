@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import '../models/friend_models.dart';
+import '../services/friends_service.dart';
+import '../services/groups_service.dart';
+import '../models/group_models.dart';
 
 class CreateGroupModal extends StatefulWidget {
-  const CreateGroupModal({super.key});
+  final VoidCallback? onGroupCreated;
+
+  const CreateGroupModal({super.key, this.onGroupCreated});
 
   @override
   State<CreateGroupModal> createState() => _CreateGroupModalState();
@@ -9,16 +15,58 @@ class CreateGroupModal extends StatefulWidget {
 
 class _CreateGroupModalState extends State<CreateGroupModal> {
   final _groupNameController = TextEditingController();
+  final _descriptionController = TextEditingController();
   bool _isLoading = false;
+  bool _isLoadingFriends = true;
+  List<FriendModel> _friends = [];
+  final Set<int> _selectedFriendIds = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFriends();
+  }
+
+  Future<void> _loadFriends() async {
+    try {
+      final friends = await FriendsService.getFriends();
+      if (mounted) {
+        setState(() {
+          _friends = friends;
+          _isLoadingFriends = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingFriends = false;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error loading friends: $e')));
+      }
+    }
+  }
 
   @override
   void dispose() {
     _groupNameController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
   Future<void> _createGroup() async {
     if (_groupNameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a group name')),
+      );
+      return;
+    }
+
+    if (_selectedFriendIds.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select at least one friend')),
+      );
       return;
     }
 
@@ -27,18 +75,27 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
     });
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // TODO: Implement actual group creation logic
+      final request = CreateGroupRequest(
+        name: _groupNameController.text.trim(),
+        description: _descriptionController.text.trim().isEmpty
+            ? null
+            : _descriptionController.text.trim(),
+        memberIds: _selectedFriendIds.toList(),
+      );
+
+      await GroupsService.createGroup(request);
+
       if (mounted) {
         Navigator.pop(context);
+        widget.onGroupCreated?.call();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Groep "${_groupNameController.text}" aangemaakt!'),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
             margin: const EdgeInsets.all(16),
           ),
         );
@@ -46,11 +103,11 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Er ging iets mis bij het aanmaken van de groep'),
+          SnackBar(
+            content: Text('Error creating group: $e'),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.all(16),
+            margin: const EdgeInsets.all(16),
           ),
         );
       }
@@ -68,7 +125,11 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        width: 320,
+        width: MediaQuery.of(context).size.width * 0.9,
+        constraints: BoxConstraints(
+          maxWidth: 500,
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -94,12 +155,11 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Maak een groep aan',
-              style: TextStyle(
-                fontSize: 14,
-                color: Color(0xFF6B7280),
-              ),
+            Text(
+              _selectedFriendIds.isEmpty
+                  ? 'Selecteer minimaal 1 vriend'
+                  : '${_selectedFriendIds.length} ${_selectedFriendIds.length == 1 ? 'vriend' : 'vrienden'} geselecteerd',
+              style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
             ),
             const SizedBox(height: 24),
             TextField(
@@ -115,6 +175,92 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
                 ),
                 contentPadding: const EdgeInsets.all(16),
               ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _descriptionController,
+              decoration: InputDecoration(
+                hintText: 'Beschrijving (optioneel)...',
+                hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
+                filled: true,
+                fillColor: const Color(0xFFF3F4F6),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.all(16),
+              ),
+              maxLines: 2,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Selecteer vrienden',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2C2C2C),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Flexible(
+              child: _isLoadingFriends
+                  ? const Center(child: CircularProgressIndicator())
+                  : _friends.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Geen vrienden gevonden',
+                        style: TextStyle(color: Color(0xFF9CA3AF)),
+                      ),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0xFFE5E7EB)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _friends.length,
+                        itemBuilder: (context, index) {
+                          final friend = _friends[index];
+                          final isSelected = _selectedFriendIds.contains(
+                            friend.userId,
+                          );
+
+                          return CheckboxListTile(
+                            value: isSelected,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true) {
+                                  _selectedFriendIds.add(friend.userId);
+                                } else {
+                                  _selectedFriendIds.remove(friend.userId);
+                                }
+                              });
+                            },
+                            title: Text(
+                              friend.fullName,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            subtitle: Text(
+                              '@${friend.username}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            secondary: CircleAvatar(
+                              backgroundImage: friend.profilePictureUrl != null
+                                  ? NetworkImage(friend.profilePictureUrl!)
+                                  : null,
+                              child: friend.profilePictureUrl == null
+                                  ? const Icon(Icons.person)
+                                  : null,
+                            ),
+                            activeColor: const Color(0xFF4A90E2),
+                          );
+                        },
+                      ),
+                    ),
             ),
             const SizedBox(height: 24),
             Row(
@@ -154,7 +300,9 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
                             width: 16,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : const Text(

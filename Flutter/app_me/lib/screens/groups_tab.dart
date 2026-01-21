@@ -1,21 +1,142 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../widgets/create_group_modal.dart';
-import 'chat_detail_screen.dart';
+import '../models/group_models.dart';
+import '../services/groups_service.dart';
+import '../services/signalr_service.dart';
+import 'group_chat_screen.dart';
 
-class GroupsTab extends StatelessWidget {
+class GroupsTab extends StatefulWidget {
   const GroupsTab({super.key});
 
-  void _showCreateGroupModal(BuildContext context) {
+  @override
+  State<GroupsTab> createState() => _GroupsTabState();
+}
+
+class _GroupsTabState extends State<GroupsTab>
+    with AutomaticKeepAliveClientMixin {
+  List<GroupModel> _groups = [];
+  bool _isLoading = true;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGroups();
+    _setupSignalRListeners();
+  }
+
+  void _setupSignalRListeners() {
+    final signalR = SignalRService();
+
+    signalR.onGroupMessageReceived = (message) {
+      _loadGroups(); // Refresh list when new message arrives
+    };
+
+    signalR.onGroupCreated = (group) {
+      setState(() {
+        _groups.insert(0, group);
+      });
+    };
+
+    signalR.onGroupUpdated = (group) {
+      setState(() {
+        final index = _groups.indexWhere((g) => g.id == group.id);
+        if (index != -1) {
+          _groups[index] = group;
+        }
+      });
+    };
+
+    signalR.onGroupDeleted = (groupId) {
+      setState(() {
+        _groups.removeWhere((g) => g.id == groupId);
+      });
+    };
+
+    signalR.onGroupMemberAdded = (groupId, member) {
+      _loadGroups(); // Refresh to update member counts
+    };
+
+    signalR.onGroupMemberRemoved = (groupId, userId) {
+      _loadGroups(); // Refresh to update member counts
+    };
+  }
+
+  @override
+  void didUpdateWidget(covariant GroupsTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _loadGroups();
+  }
+
+  Future<void> _loadGroups() async {
+    try {
+      final groups = await GroupsService.getMyGroups();
+      if (mounted) {
+        setState(() {
+          _groups = groups;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error loading groups: $e')));
+      }
+    }
+  }
+
+  void _showCreateGroupModal() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => const CreateGroupModal(),
+      builder: (context) => CreateGroupModal(
+        onGroupCreated: () {
+          _loadGroups();
+        },
+      ),
     );
+  }
+
+  String _formatTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final messageDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+    if (messageDate == today) {
+      return DateFormat('HH:mm').format(dateTime);
+    } else if (messageDate == yesterday) {
+      return 'Gisteren';
+    } else if (now.difference(dateTime).inDays < 7) {
+      return DateFormat('EEEE').format(dateTime);
+    } else {
+      return DateFormat('dd/MM/yy').format(dateTime);
+    }
+  }
+
+  Color _getGroupColor(int index) {
+    final colors = [
+      const Color(0xFF10B981),
+      const Color(0xFF8B5CF6),
+      const Color(0xFF06B6D4),
+      const Color(0xFFF59E0B),
+      const Color(0xFFEC4899),
+      const Color(0xFF3B82F6),
+    ];
+    return colors[index % colors.length];
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         // Search Bar
@@ -38,9 +159,9 @@ class GroupsTab extends StatelessWidget {
         // Create Group Button
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ElevatedButton(
-            onPressed: () => _showCreateGroupModal(context),
+            onPressed: _showCreateGroupModal,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4A90E2),
               foregroundColor: Colors.white,
@@ -55,50 +176,56 @@ class GroupsTab extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 16),
         // Groups List
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              _buildGroupItem(
-                context: context,
-                groupName: 'Familie',
-                lastMessage: 'Hallo allemaal! Hoe gaat het?',
-                time: '12:30',
-                memberCount: 5,
-                avatarColor: const Color(0xFF10B981),
-              ),
-              _buildGroupItem(
-                context: context,
-                groupName: 'Werk Team',
-                lastMessage: 'De vergadering is om 14:00',
-                time: '11:45',
-                memberCount: 8,
-                avatarColor: const Color(0xFF8B5CF6),
-              ),
-              _buildGroupItem(
-                context: context,
-                groupName: 'Vrienden',
-                lastMessage: 'Weekend plannen?',
-                time: 'Gisteren',
-                memberCount: 12,
-                avatarColor: const Color(0xFF06B6D4),
-              ),
-            ],
-          ),
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _groups.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.group_off, size: 64, color: Colors.grey[400]),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Geen groepen',
+                        style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Maak een groep om te beginnen',
+                        style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                      ),
+                    ],
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _loadGroups,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: _groups.length,
+                    itemBuilder: (context, index) {
+                      final group = _groups[index];
+                      return _buildGroupItem(
+                        group: group,
+                        avatarColor: _getGroupColor(index),
+                      );
+                    },
+                  ),
+                ),
         ),
       ],
     );
   }
 
   Widget _buildGroupItem({
-    required BuildContext context,
-    required String groupName,
-    required String lastMessage,
-    required String time,
-    required int memberCount,
+    required GroupModel group,
     required Color avatarColor,
   }) {
+    final lastMessage = group.lastMessage;
+    final memberCount = group.members.length;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -106,13 +233,8 @@ class GroupsTab extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ChatDetailScreen(
-                userId: 0, // TODO: Implement group IDs
-                name: groupName,
-                avatarColor: avatarColor,
-                isOnline: false,
-                isGroup: true,
-              ),
+              builder: (context) =>
+                  GroupChatScreen(groupId: group.id, groupName: group.name),
             ),
           );
         },
@@ -139,11 +261,7 @@ class GroupsTab extends StatelessWidget {
                   color: avatarColor,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.group,
-                  color: Colors.white,
-                  size: 24,
-                ),
+                child: const Icon(Icons.group, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -153,35 +271,50 @@ class GroupsTab extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          groupName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                        Expanded(
+                          child: Text(
+                            group.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(
-                          time,
-                          style: const TextStyle(
-                            color: Color(0xFF9CA3AF),
-                            fontSize: 12,
+                        if (lastMessage != null)
+                          Text(
+                            _formatTime(lastMessage.createdAt),
+                            style: const TextStyle(
+                              color: Color(0xFF9CA3AF),
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      lastMessage,
-                      style: const TextStyle(
-                        color: Color(0xFF6B7280),
-                        fontSize: 14,
+                    if (lastMessage != null)
+                      Text(
+                        '${lastMessage.senderUsername}: ${lastMessage.content}',
+                        style: const TextStyle(
+                          color: Color(0xFF6B7280),
+                          fontSize: 14,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    else
+                      const Text(
+                        'Nog geen berichten',
+                        style: TextStyle(
+                          color: Color(0xFF9CA3AF),
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
                     const SizedBox(height: 4),
                     Text(
-                      '$memberCount leden',
+                      '$memberCount ${memberCount == 1 ? 'lid' : 'leden'}',
                       style: const TextStyle(
                         color: Color(0xFF9CA3AF),
                         fontSize: 12,
@@ -190,6 +323,25 @@ class GroupsTab extends StatelessWidget {
                   ],
                 ),
               ),
+              if (group.unreadCount > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4A90E2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${group.unreadCount}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

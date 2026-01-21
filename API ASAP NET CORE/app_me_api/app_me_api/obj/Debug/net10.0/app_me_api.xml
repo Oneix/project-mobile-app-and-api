@@ -55,6 +55,61 @@
             Search users
             </summary>
         </member>
+        <member name="M:app_me_api.Controllers.GroupsController.GetMyGroups">
+            <summary>
+            Get all groups user is a member of
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.CreateGroup(app_me_api.DTOs.CreateGroupRequest)">
+            <summary>
+            Create a new group
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.GetGroup(System.Int32)">
+            <summary>
+            Get group details
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.GetGroupMessages(System.Int32,System.Nullable{System.Int32},System.Int32)">
+            <summary>
+            Get group messages
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.SendGroupMessage(System.Int32,app_me_api.DTOs.SendGroupMessageRequest)">
+            <summary>
+            Send a group message
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.AddMember(System.Int32,app_me_api.DTOs.AddGroupMemberRequest)">
+            <summary>
+            Add member to group
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.RemoveMember(System.Int32,System.Int32)">
+            <summary>
+            Remove member from group
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.UpdateGroup(System.Int32,app_me_api.DTOs.UpdateGroupRequest)">
+            <summary>
+            Update group
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.EditGroupMessage(System.Int32,System.Int32,app_me_api.DTOs.SendGroupMessageRequest)">
+            <summary>
+            Edit a group message
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.DeleteGroupMessage(System.Int32,System.Int32)">
+            <summary>
+            Delete a group message
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.GroupsController.DeleteGroup(System.Int32)">
+            <summary>
+            Delete group
+            </summary>
+        </member>
         <member name="M:app_me_api.Controllers.MessagesController.GetConversations">
             <summary>
             Get all conversations (users with whom you have exchanged messages)
@@ -144,6 +199,18 @@
             <inheritdoc />
         </member>
         <member name="M:app_me_api.Migrations.AddMessagesTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_me_api.Migrations.AddGroupsTables">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddGroupsTables.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddGroupsTables.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddGroupsTables.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:Program">

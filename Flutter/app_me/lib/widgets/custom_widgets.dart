@@ -194,7 +194,9 @@ class AuthCard extends StatelessWidget {
 }
 
 class CustomAppBar extends StatefulWidget {
-  const CustomAppBar({super.key});
+  final VoidCallback? onProfileTap;
+  
+  const CustomAppBar({super.key, this.onProfileTap});
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -244,40 +246,43 @@ class _CustomAppBarState extends State<CustomAppBar> {
               color: Color(0xFF2C2C2C),
             ),
           ),
-          CircleAvatar(
-            radius: 20,
-            backgroundColor: const Color(0xFF4A90E2),
-            child: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          _profilePictureUrl!,
-                          width: 40,
-                          height: 40,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(
-                              Icons.person,
-                              color: Colors.white,
-                              size: 20,
-                            );
-                          },
-                        ),
-                      )
-                    : const Icon(
-                        Icons.person,
+          GestureDetector(
+            onTap: widget.onProfileTap,
+            child: CircleAvatar(
+              radius: 20,
+              backgroundColor: const Color(0xFF4A90E2),
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
                         color: Colors.white,
-                        size: 20,
                       ),
+                    )
+                  : _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.network(
+                            _profilePictureUrl!,
+                            width: 40,
+                            height: 40,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: 20,
+                              );
+                            },
+                          ),
+                        )
+                      : const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+            ),
           ),
         ],
       ),

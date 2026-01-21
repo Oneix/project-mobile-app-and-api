@@ -1,5 +1,6 @@
 import 'package:signalr_netcore/signalr_client.dart';
 import '../utils/token_storage.dart';
+import '../models/group_models.dart';
 
 class SignalRService {
   static final SignalRService _instance = SignalRService._internal();
@@ -11,7 +12,7 @@ class SignalRService {
 
   bool get isConnected => _isConnected;
 
-  // Callbacks for events
+  // Callbacks for 1-on-1 chat events
   Function(int userId, bool isOnline)? onUserStatusChanged;
   Function(Map<String, dynamic> message)? onMessageReceived;
   Function(int messageId)? onMessageRead;
@@ -19,6 +20,16 @@ class SignalRService {
   Function(int messageId)? onMessageDeleted;
   Function(int userId)? onUserTyping;
   Function(int userId)? onUserStoppedTyping;
+
+  // Callbacks for group events
+  Function(GroupMessageModel message)? onGroupMessageReceived;
+  Function(GroupMessageModel message)? onGroupMessageEdited;
+  Function(GroupMessageModel message)? onGroupMessageDeleted;
+  Function(GroupModel group)? onGroupCreated;
+  Function(GroupModel group)? onGroupUpdated;
+  Function(int groupId)? onGroupDeleted;
+  Function(int groupId, GroupMemberModel member)? onGroupMemberAdded;
+  Function(int groupId, int userId)? onGroupMemberRemoved;
 
   Future<void> connect() async {
     if (_isConnected) return;
@@ -41,7 +52,7 @@ class SignalRService {
           .withAutomaticReconnect()
           .build();
 
-      // Register event handlers
+      // Register event handlers for 1-on-1 chat
       _hubConnection!.on('UserOnline', _handleUserOnline);
       _hubConnection!.on('UserOffline', _handleUserOffline);
       _hubConnection!.on('ReceiveMessage', _handleReceiveMessage);
@@ -50,6 +61,24 @@ class SignalRService {
       _hubConnection!.on('MessageDeleted', _handleMessageDeleted);
       _hubConnection!.on('UserTyping', _handleUserTyping);
       _hubConnection!.on('UserStoppedTyping', _handleUserStoppedTyping);
+
+      // Register event handlers for group chat
+      _hubConnection!.on('ReceiveGroupMessage', _handleReceiveGroupMessage);
+      _hubConnection!.on('GroupMessageEdited', _handleGroupMessageEdited);
+      _hubConnection!.on('GroupMessageDeleted', _handleGroupMessageDeleted);
+      _hubConnection!.on('GroupCreated', _handleGroupCreated);
+      _hubConnection!.on('GroupUpdated', _handleGroupUpdated);
+      _hubConnection!.on('GroupDeleted', _handleGroupDeleted);
+      _hubConnection!.on('GroupMemberAdded', _handleGroupMemberAdded);
+      _hubConnection!.on('GroupMemberRemoved', _handleGroupMemberRemoved);
+
+      // Register event handlers for groups
+      _hubConnection!.on('ReceiveGroupMessage', _handleReceiveGroupMessage);
+      _hubConnection!.on('GroupCreated', _handleGroupCreated);
+      _hubConnection!.on('GroupUpdated', _handleGroupUpdated);
+      _hubConnection!.on('GroupDeleted', _handleGroupDeleted);
+      _hubConnection!.on('GroupMemberAdded', _handleGroupMemberAdded);
+      _hubConnection!.on('GroupMemberRemoved', _handleGroupMemberRemoved);
 
       _hubConnection!.onclose(({Exception? error}) {
         print('SignalR connection closed: $error');
@@ -183,6 +212,71 @@ class SignalRService {
     }
   }
 
+  // Group event handlers
+  void _handleReceiveGroupMessage(List<Object?>? args) {
+    if (args != null && args.isNotEmpty) {
+      final messageJson = args[0] as Map<String, dynamic>;
+      final message = GroupMessageModel.fromJson(messageJson);
+      onGroupMessageReceived?.call(message);
+    }
+  }
+
+  void _handleGroupMessageEdited(List<Object?>? args) {
+    if (args != null && args.isNotEmpty) {
+      final messageJson = args[0] as Map<String, dynamic>;
+      final message = GroupMessageModel.fromJson(messageJson);
+      onGroupMessageEdited?.call(message);
+    }
+  }
+
+  void _handleGroupMessageDeleted(List<Object?>? args) {
+    if (args != null && args.isNotEmpty) {
+      final messageJson = args[0] as Map<String, dynamic>;
+      final message = GroupMessageModel.fromJson(messageJson);
+      onGroupMessageDeleted?.call(message);
+    }
+  }
+
+  void _handleGroupCreated(List<Object?>? args) {
+    if (args != null && args.isNotEmpty) {
+      final groupJson = args[0] as Map<String, dynamic>;
+      final group = GroupModel.fromJson(groupJson);
+      onGroupCreated?.call(group);
+    }
+  }
+
+  void _handleGroupUpdated(List<Object?>? args) {
+    if (args != null && args.isNotEmpty) {
+      final groupJson = args[0] as Map<String, dynamic>;
+      final group = GroupModel.fromJson(groupJson);
+      onGroupUpdated?.call(group);
+    }
+  }
+
+  void _handleGroupDeleted(List<Object?>? args) {
+    if (args != null && args.isNotEmpty) {
+      final groupId = args[0] as int;
+      onGroupDeleted?.call(groupId);
+    }
+  }
+
+  void _handleGroupMemberAdded(List<Object?>? args) {
+    if (args != null && args.length >= 2) {
+      final groupId = args[0] as int;
+      final memberJson = args[1] as Map<String, dynamic>;
+      final member = GroupMemberModel.fromJson(memberJson);
+      onGroupMemberAdded?.call(groupId, member);
+    }
+  }
+
+  void _handleGroupMemberRemoved(List<Object?>? args) {
+    if (args != null && args.length >= 2) {
+      final groupId = args[0] as int;
+      final userId = args[1] as int;
+      onGroupMemberRemoved?.call(groupId, userId);
+    }
+  }
+
   void dispose() {
     disconnect();
     onUserStatusChanged = null;
@@ -192,5 +286,13 @@ class SignalRService {
     onMessageDeleted = null;
     onUserTyping = null;
     onUserStoppedTyping = null;
+    onGroupMessageReceived = null;
+    onGroupMessageEdited = null;
+    onGroupMessageDeleted = null;
+    onGroupCreated = null;
+    onGroupUpdated = null;
+    onGroupDeleted = null;
+    onGroupMemberAdded = null;
+    onGroupMemberRemoved = null;
   }
 }

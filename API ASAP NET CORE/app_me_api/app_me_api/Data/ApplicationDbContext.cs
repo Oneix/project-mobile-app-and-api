@@ -14,6 +14,9 @@ namespace app_me_api.Data
         public DbSet<Friend> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupMember> GroupMembers { get; set; }
+        public DbSet<GroupMessage> GroupMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,6 +79,47 @@ namespace app_me_api.Data
 
                 entity.HasIndex(e => new { e.SenderId, e.ReceiverId, e.CreatedAt });
                 entity.HasIndex(e => e.CreatedAt);
+            });
+
+            // Configure Group entity
+            modelBuilder.Entity<Group>(entity =>
+            {
+                entity.HasOne(g => g.Owner)
+                    .WithMany()
+                    .HasForeignKey(g => g.OwnerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Configure GroupMember entity
+            modelBuilder.Entity<GroupMember>(entity =>
+            {
+                entity.HasOne(gm => gm.Group)
+                    .WithMany(g => g.Members)
+                    .HasForeignKey(gm => gm.GroupId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(gm => gm.User)
+                    .WithMany()
+                    .HasForeignKey(gm => gm.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(e => new { e.GroupId, e.UserId }).IsUnique();
+            });
+
+            // Configure GroupMessage entity
+            modelBuilder.Entity<GroupMessage>(entity =>
+            {
+                entity.HasOne(gm => gm.Group)
+                    .WithMany(g => g.Messages)
+                    .HasForeignKey(gm => gm.GroupId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(gm => gm.Sender)
+                    .WithMany()
+                    .HasForeignKey(gm => gm.SenderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(e => new { e.GroupId, e.CreatedAt });
             });
         }
 
