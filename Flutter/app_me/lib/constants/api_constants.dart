@@ -17,6 +17,10 @@ class ApiConstants {
   static const String register = '$authBase/register';
   static const String login = '$authBase/login';
   
+  // User endpoints
+  static const String userBase = '$apiPrefix/user';
+  static const String userProfile = '$userBase/profile';
+  
   // Future endpoints (for reference)
   // static const String friendsBase = '$apiPrefix/friends';
   // static const String chatsBase = '$apiPrefix/chats';

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import '../screens/login_screen.dart';
 
 class LogoutModal extends StatefulWidget {
-  const LogoutModal({super.key});
+  final VoidCallback onConfirm;
+  
+  const LogoutModal({
+    super.key,
+    required this.onConfirm,
+  });
 
   @override
   State<LogoutModal> createState() => _LogoutModalState();
@@ -17,18 +21,8 @@ class _LogoutModalState extends State<LogoutModal> {
     });
 
     try {
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // TODO: Implement actual logout logic
-      if (mounted) {
-        Navigator.pop(context); // Close modal
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false,
-        );
-      }
+      Navigator.pop(context); // Close modal
+      widget.onConfirm(); // Call the provided logout function
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -36,7 +30,7 @@ class _LogoutModalState extends State<LogoutModal> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Er ging iets mis bij het uitloggen'),
+            content: Text('er ging iets mis bij het uitloggen'),
             backgroundColor: Colors.red,
           ),
         );

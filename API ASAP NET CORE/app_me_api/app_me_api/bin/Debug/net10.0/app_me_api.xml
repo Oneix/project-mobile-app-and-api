@@ -20,6 +20,22 @@
             authenticates a user by checking their email and password. if correct, returns a jwt token that expires after 24 hours. you need to include this token in the authorization header for protected endpoints.
             </remarks>
         </member>
+        <member name="M:app_me_api.Controllers.UserController.GetProfile">
+            <summary>
+            get current user profile
+            </summary>
+            <remarks>
+            returns the profile information of the currently logged in user. you need to include the jwt token in the authorization header.
+            </remarks>
+        </member>
+        <member name="M:app_me_api.Controllers.UserController.UpdateProfile(app_me_api.DTOs.UpdateProfileRequest)">
+            <summary>
+            update current user profile
+            </summary>
+            <remarks>
+            updates the profile information like first name, last name, and profile picture url. requires jwt token in authorization header.
+            </remarks>
+        </member>
         <member name="T:app_me_api.Migrations.InitialCreate">
             <inheritdoc />
         </member>
