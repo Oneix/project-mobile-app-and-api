@@ -100,6 +100,9 @@ if (app.Environment.IsDevelopment())
 // Disable HTTPS redirection for local development
 // app.UseHttpsRedirection();
 
+// Enable static files to serve uploaded images
+app.UseStaticFiles();
+
 app.UseCors("AllowFlutterApp");
 
 app.UseAuthentication();

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../services/user_service.dart';
 import '../services/auth_service.dart';
+import '../services/upload_service.dart';
 import '../utils/error_handler.dart';
 import '../widgets/logout_modal.dart';
 import 'login_screen.dart';
@@ -17,9 +20,11 @@ class _ProfileTabState extends State<ProfileTab> {
   bool _isLoading = true;
   bool _isEditing = false;
   bool _isSaving = false;
+  bool _isUploadingImage = false;
   
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
@@ -80,6 +85,47 @@ class _ProfileTabState extends State<ProfileTab> {
     }
   }
 
+  Future<void> _pickAndUploadImage() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (image == null) return;
+
+      setState(() {
+        _isUploadingImage = true;
+      });
+
+      // Upload image
+      final imageUrl = await UploadService.uploadProfilePicture(File(image.path));
+
+      // Update profile with new image URL
+      final updatedProfile = await UserService.updateProfile(
+        profilePictureUrl: imageUrl,
+      );
+
+      setState(() {
+        _userProfile = updatedProfile;
+        _isUploadingImage = false;
+      });
+
+      if (mounted) {
+        ErrorHandler.showSuccess(context, 'profielfoto bijgewerkt');
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isUploadingImage = false;
+        });
+        ErrorHandler.showError(context, e.toString());
+      }
+    }
+  }
+
   Future<void> _handleLogout() async {
     await AuthService.logout();
     if (mounted) {
@@ -130,31 +176,57 @@ class _ProfileTabState extends State<ProfileTab> {
               Container(
                 width: 120,
                 height: 120,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF4A90E2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4A90E2),
                   shape: BoxShape.circle,
+                  image: _userProfile!.profilePictureUrl != null
+                      ? DecorationImage(
+                          image: NetworkImage(_userProfile!.profilePictureUrl!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
                 ),
-                child: const Icon(
-                  Icons.person,
-                  size: 60,
-                  color: Colors.white,
-                ),
+                child: _userProfile!.profilePictureUrl == null
+                    ? const Icon(
+                        Icons.person,
+                        size: 60,
+                        color: Colors.white,
+                      )
+                    : null,
               ),
+              if (_isUploadingImage)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  ),
+                ),
               Positioned(
                 bottom: 0,
                 right: 0,
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4A90E2),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 20,
-                    color: Colors.white,
+                child: GestureDetector(
+                  onTap: _isUploadingImage ? null : _pickAndUploadImage,
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4A90E2),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 20,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

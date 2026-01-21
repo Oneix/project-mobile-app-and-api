@@ -20,6 +20,15 @@
             authenticates a user by checking their email and password. if correct, returns a jwt token that expires after 24 hours. you need to include this token in the authorization header for protected endpoints.
             </remarks>
         </member>
+        <member name="M:app_me_api.Controllers.UploadController.UploadProfilePicture(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Upload profile picture
+            </summary>
+            <remarks>
+            Uploads a profile picture for the authenticated user. Accepts image files (jpg, jpeg, png, gif).
+            Returns the URL path to access the uploaded image.
+            </remarks>
+        </member>
         <member name="M:app_me_api.Controllers.UserController.GetProfile">
             <summary>
             get current user profile
