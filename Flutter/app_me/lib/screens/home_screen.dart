@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../widgets/custom_widgets.dart';
+import '../services/signalr_service.dart';
 import 'chats_tab.dart';
 import 'friends_tab.dart';
 import 'groups_tab.dart';
@@ -15,6 +16,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  final SignalRService _signalR = SignalRService();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSignalR();
+  }
+
+  Future<void> _initializeSignalR() async {
+    try {
+      await _signalR.connect();
+      print('SignalR connected in HomeScreen');
+    } catch (e) {
+      print('Error connecting to SignalR in HomeScreen: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _signalR.disconnect();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

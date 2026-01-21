@@ -46,6 +46,9 @@ dependencies:
   
   # Image picker for profile picture
   image_picker: ^1.0.7
+  
+  # SignalR for real-time chat
+  signalr_netcore: ^1.3.7
 
 dev_dependencies:
   flutter_test:

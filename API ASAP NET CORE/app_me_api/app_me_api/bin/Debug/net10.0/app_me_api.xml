@@ -55,6 +55,36 @@
             Search users
             </summary>
         </member>
+        <member name="M:app_me_api.Controllers.MessagesController.GetConversations">
+            <summary>
+            Get all conversations (users with whom you have exchanged messages)
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.MessagesController.GetMessageHistory(System.Int32,System.Nullable{System.Int32},System.Int32)">
+            <summary>
+            Get message history with a specific user
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.MessagesController.SendMessage(app_me_api.DTOs.SendMessageRequest)">
+            <summary>
+            Send a message
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.MessagesController.EditMessage(System.Int32,app_me_api.DTOs.EditMessageRequest)">
+            <summary>
+            Edit a message
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.MessagesController.DeleteMessage(System.Int32)">
+            <summary>
+            Delete a message
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.MessagesController.MarkMessagesAsRead(System.Int32)">
+            <summary>
+            Mark messages as read
+            </summary>
+        </member>
         <member name="M:app_me_api.Controllers.UploadController.UploadProfilePicture(Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Upload profile picture
@@ -102,6 +132,18 @@
             <inheritdoc />
         </member>
         <member name="M:app_me_api.Migrations.AddFriendSystem.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_me_api.Migrations.AddMessagesTable">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddMessagesTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddMessagesTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddMessagesTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:Program">

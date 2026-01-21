@@ -298,10 +298,12 @@ class _FriendsTabState extends State<FriendsTab> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChatDetailScreen(
+                      userId: friend.userId,
                       name: friend.fullName,
                       avatarColor: const Color(0xFF4A90E2),
                       isOnline: friend.isOnline,
                       isGroup: false,
+                      profilePictureUrl: friend.profilePictureUrl,
                     ),
                   ),
                 );

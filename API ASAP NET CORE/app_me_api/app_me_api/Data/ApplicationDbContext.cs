@@ -13,6 +13,7 @@ namespace app_me_api.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,6 +59,23 @@ namespace app_me_api.Data
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasIndex(e => new { e.SenderId, e.ReceiverId, e.Status });
+            });
+
+            // Configure Message entity
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasOne(m => m.Sender)
+                    .WithMany()
+                    .HasForeignKey(m => m.SenderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(m => m.Receiver)
+                    .WithMany()
+                    .HasForeignKey(m => m.ReceiverId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(e => new { e.SenderId, e.ReceiverId, e.CreatedAt });
+                entity.HasIndex(e => e.CreatedAt);
             });
         }
 

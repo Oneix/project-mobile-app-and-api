@@ -107,8 +107,8 @@ class GroupsTab extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ChatDetailScreen(
+                userId: 0, // TODO: Implement group IDs
                 name: groupName,
-                status: '$memberCount leden',
                 avatarColor: avatarColor,
                 isOnline: false,
                 isGroup: true,
