@@ -40,12 +40,16 @@ namespace app_me_api.Controllers
                 var userId = GetCurrentUserId();
                 if (userId == null) return Unauthorized(new ErrorResponse { Message = "Invalid token" });
 
+                _logger.LogInformation($"Getting conversations for user {userId}");
+
                 // Get all users I've exchanged messages with
                 var conversationUserIds = await _context.Messages
                     .Where(m => (m.SenderId == userId || m.ReceiverId == userId) && !m.IsDeleted)
                     .Select(m => m.SenderId == userId ? m.ReceiverId : m.SenderId)
                     .Distinct()
                     .ToListAsync();
+
+                _logger.LogInformation($"Found {conversationUserIds.Count} conversation user IDs: {string.Join(", ", conversationUserIds)}");
 
                 var conversations = new List<ChatConversationResponse>();
 

@@ -64,16 +64,30 @@ class MessageModel {
 
 class ChatConversationModel {
   final int userId;
-  final String name;
+  final String username;
+  final String? firstName;
+  final String? lastName;
   final String? profilePictureUrl;
   final bool isOnline;
   final DateTime? lastSeenAt;
   final MessageModel? lastMessage;
   final int unreadCount;
 
+  String get name {
+    if (firstName != null && lastName != null) {
+      return '$firstName $lastName';
+    } else if (firstName != null) {
+      return firstName!;
+    } else {
+      return username;
+    }
+  }
+
   ChatConversationModel({
     required this.userId,
-    required this.name,
+    required this.username,
+    this.firstName,
+    this.lastName,
     this.profilePictureUrl,
     required this.isOnline,
     this.lastSeenAt,
@@ -84,7 +98,9 @@ class ChatConversationModel {
   factory ChatConversationModel.fromJson(Map<String, dynamic> json) {
     return ChatConversationModel(
       userId: json['userId'],
-      name: json['name'],
+      username: json['username'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
       profilePictureUrl: json['profilePictureUrl'],
       isOnline: json['isOnline'],
       lastSeenAt: json['lastSeenAt'] != null ? DateTime.parse(json['lastSeenAt']) : null,

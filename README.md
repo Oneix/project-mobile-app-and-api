@@ -54,3 +54,6 @@ project-mobile-app-and-api/
 │   └── User-Stories-en-Epics.md
 └── README.md                # Dit bestand
 ```
+
+to run a second to test:
+Start-Process "c:\Projects\project-mobile-app-and-api\Flutter\app_me\build\windows\x64\runner\Debug\app_me.exe"

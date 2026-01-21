@@ -203,10 +203,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       
       final message = await MessagesService.sendMessage(request);
       
-      setState(() {
-        _messages.add(message);
+      // Don't add message here - SignalR will notify us and add it
+      // This prevents duplicate messages
+      if (_currentUserId == null || _currentUserId == 0) {
         _currentUserId = message.senderId;
-      });
+      }
       
       _scrollToBottom();
     } catch (e) {

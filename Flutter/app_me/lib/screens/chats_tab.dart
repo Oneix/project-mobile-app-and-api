@@ -30,13 +30,20 @@ class _ChatsTabState extends State<ChatsTab> with AutomaticKeepAliveClientMixin 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Refresh conversations when tab becomes visible
+    // Don't reload here - causes too many API calls
+  }
+
+  @override
+  void didUpdateWidget(ChatsTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reload when widget updates
     _loadConversations();
   }
 
   void _setupSignalR() {
     // Listen for new messages
     _signalR.onMessageReceived = (messageJson) {
+      print('ChatsTab: Received message via SignalR, refreshing conversations');
       _loadConversations(); // Refresh the list
     };
 
@@ -56,7 +63,9 @@ class _ChatsTabState extends State<ChatsTab> with AutomaticKeepAliveClientMixin 
 
   Future<void> _loadConversations() async {
     try {
+      print('ChatsTab: Loading conversations...');
       final conversations = await MessagesService.getConversations();
+      print('ChatsTab: Received ${conversations.length} conversations');
       if (mounted) {
         setState(() {
           _conversations = conversations;
