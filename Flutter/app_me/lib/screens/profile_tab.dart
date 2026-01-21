@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import '../services/upload_service.dart';
 import '../utils/error_handler.dart';
 import '../widgets/logout_modal.dart';
+import '../widgets/profile_picture_modal.dart';
 import 'login_screen.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -126,6 +127,45 @@ class _ProfileTabState extends State<ProfileTab> {
     }
   }
 
+  Future<void> _resetProfilePicture() async {
+    try {
+      setState(() {
+        _isUploadingImage = true;
+      });
+
+      // Update profile with null to reset to default
+      final updatedProfile = await UserService.updateProfile(
+        profilePictureUrl: '',
+      );
+
+      setState(() {
+        _userProfile = updatedProfile;
+        _isUploadingImage = false;
+      });
+
+      if (mounted) {
+        ErrorHandler.showSuccess(context, 'profielfoto gereset');
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isUploadingImage = false;
+        });
+        ErrorHandler.showError(context, e.toString());
+      }
+    }
+  }
+
+  void _showProfilePictureOptions() {
+    showDialog(
+      context: context,
+      builder: (context) => ProfilePictureModal(
+        onUpload: _pickAndUploadImage,
+        onReset: _resetProfilePicture,
+      ),
+    );
+  }
+
   Future<void> _handleLogout() async {
     await AuthService.logout();
     if (mounted) {
@@ -213,7 +253,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 bottom: 0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: _isUploadingImage ? null : _pickAndUploadImage,
+                  onTap: _isUploadingImage ? null : _showProfilePictureOptions,
                   child: Container(
                     width: 36,
                     height: 36,

@@ -11,6 +11,8 @@ namespace app_me_api.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Friend> Friends { get; set; }
+        public DbSet<FriendRequest> FriendRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +26,38 @@ namespace app_me_api.Data
                 
                 entity.Property(e => e.CreatedAt)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
+
+            // Configure Friend entity
+            modelBuilder.Entity<Friend>(entity =>
+            {
+                entity.HasOne(f => f.User)
+                    .WithMany()
+                    .HasForeignKey(f => f.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(f => f.FriendUser)
+                    .WithMany()
+                    .HasForeignKey(f => f.FriendUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(e => new { e.UserId, e.FriendUserId }).IsUnique();
+            });
+
+            // Configure FriendRequest entity
+            modelBuilder.Entity<FriendRequest>(entity =>
+            {
+                entity.HasOne(fr => fr.Sender)
+                    .WithMany()
+                    .HasForeignKey(fr => fr.SenderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(fr => fr.Receiver)
+                    .WithMany()
+                    .HasForeignKey(fr => fr.ReceiverId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(e => new { e.SenderId, e.ReceiverId, e.Status });
             });
         }
 

@@ -99,7 +99,12 @@ namespace app_me_api.Controllers
                     user.LastName = request.LastName;
 
                 if (request.ProfilePictureUrl != null)
-                    user.ProfilePictureUrl = request.ProfilePictureUrl;
+                {
+                    // Empty string means reset to default (null)
+                    user.ProfilePictureUrl = string.IsNullOrEmpty(request.ProfilePictureUrl) 
+                        ? null 
+                        : request.ProfilePictureUrl;
+                }
 
                 user.UpdatedAt = DateTime.UtcNow;
 

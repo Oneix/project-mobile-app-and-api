@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/user_service.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hint;
@@ -192,8 +193,40 @@ class AuthCard extends StatelessWidget {
   }
 }
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
   const CustomAppBar({super.key});
+
+  @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  String? _profilePictureUrl;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfilePicture();
+  }
+
+  Future<void> _loadProfilePicture() async {
+    try {
+      final profile = await UserService.getProfile();
+      if (mounted) {
+        setState(() {
+          _profilePictureUrl = profile.profilePictureUrl;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,22 +247,37 @@ class CustomAppBar extends StatelessWidget {
           CircleAvatar(
             radius: 20,
             backgroundColor: const Color(0xFF4A90E2),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/profile.png',
-                width: 40,
-                height: 40,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 20,
-                  );
-                },
-              ),
-            ),
+            child: _isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : _profilePictureUrl != null && _profilePictureUrl!.isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          _profilePictureUrl!,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 20,
+                            );
+                          },
+                        ),
+                      )
+                    : const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 20,
+                      ),
           ),
         ],
       ),

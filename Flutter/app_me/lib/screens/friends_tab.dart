@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import '../services/friends_service.dart';
+import '../models/friend_models.dart';
+import '../utils/error_handler.dart';
+import 'friend_requests_screen.dart';
+import 'add_friend_screen.dart';
 import 'chat_detail_screen.dart';
 
 class FriendsTab extends StatefulWidget {
@@ -9,356 +14,325 @@ class FriendsTab extends StatefulWidget {
 }
 
 class _FriendsTabState extends State<FriendsTab> {
+  List<FriendModel> _friends = [];
+  int _pendingRequestsCount = 0;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFriends();
+    _loadPendingRequestsCount();
+  }
+
+  Future<void> _loadFriends() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final friends = await FriendsService.getFriends();
+      setState(() {
+        _friends = friends;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ErrorHandler.showError(context, e.toString());
+      }
+    }
+  }
+
+  Future<void> _loadPendingRequestsCount() async {
+    try {
+      final requests = await FriendsService.getPendingRequests();
+      setState(() {
+        _pendingRequestsCount = requests.length;
+      });
+    } catch (e) {
+      // Silently fail
+    }
+  }
+
+  Future<void> _unfriend(FriendModel friend) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('vriend verwijderen'),
+        content: Text('weet je zeker dat je ${friend.fullName} wilt verwijderen?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('annuleren'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFEF4444),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('verwijderen'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await FriendsService.unfriend(friend.friendshipId);
+        ErrorHandler.showSuccess(context, 'vriend verwijderd');
+        _loadFriends();
+      } catch (e) {
+        if (mounted) {
+          ErrorHandler.showError(context, e.toString());
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Add Friend Section
+        // Add Friend and Requests Section
         Container(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF3F4F6),
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Voer in een email of gebruikersnaam.',
-                      hintStyle: TextStyle(color: Color(0xFF9CA3AF)),
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Color(0xFF9CA3AF),
-                      ),
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AddFriendScreen()),
+                    );
+                    _loadFriends();
+                  },
+                  icon: const Icon(Icons.person_add),
+                  label: const Text('vrienden zoeken'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4A90E2),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Handle add friend
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A90E2),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+              Stack(
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const FriendRequestsScreen()),
+                      );
+                      _loadFriends();
+                      _loadPendingRequestsCount();
+                    },
+                    icon: const Icon(Icons.mail_outline),
+                    label: const Text('verzoeken'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF4A90E2),
+                      side: const BorderSide(color: Color(0xFF4A90E2)),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text('Toevoegen'),
+                  if (_pendingRequestsCount > 0)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          _pendingRequestsCount > 9 ? '9+' : '$_pendingRequestsCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ],
           ),
         ),
         // Friends List
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              // Current Friends
-              _buildFriendItem(
-                name: 'Alex',
-                status: 'Online',
-                avatarColor: const Color(0xFF4A90E2),
-                isOnline: true,
-                showRemove: true,
-                onRemove: () {
-                  // TODO: Handle remove friend
-                },
-              ),
-              _buildFriendItem(
-                name: 'Maria',
-                status: 'Offline',
-                avatarColor: const Color(0xFF6B7280),
-                isOnline: false,
-                showRemove: true,
-                onRemove: () {
-                  // TODO: Handle remove friend
-                },
-              ),
-              _buildFriendItem(
-                name: 'Charlie',
-                status: 'Offline',
-                avatarColor: const Color(0xFF10B981),
-                isOnline: false,
-                showRemove: true,
-                onRemove: () {
-                  // TODO: Handle remove friend
-                },
-              ),
-              
-              // Divider
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                child: const Divider(color: Color(0xFFE5E7EB)),
-              ),
-              
-              // Friend Requests
-              const Padding(
-                padding: EdgeInsets.only(left: 4, bottom: 8),
-                child: Text(
-                  'Vriendschapsverzoeken',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF374151),
-                  ),
-                ),
-              ),
-              _buildFriendRequestItem(
-                name: 'Jhon',
-                message: 'Wil je bevriend zijn?',
-                avatarColor: const Color(0xFF2C2C2C),
-                onAccept: () {
-                  // TODO: Handle accept friend request
-                },
-                onReject: () {
-                  // TODO: Handle reject friend request
-                },
-              ),
-            ],
-          ),
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _friends.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 64,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'nog geen vrienden',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'zoek vrienden om toe te voegen',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadFriends,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _friends.length,
+                        itemBuilder: (context, index) {
+                          final friend = _friends[index];
+                          return _buildFriendItem(friend);
+                        },
+                      ),
+                    ),
         ),
       ],
     );
   }
 
-  Widget _buildFriendItem({
-    required String name,
-    required String status,
-    required Color avatarColor,
-    required bool isOnline,
-    bool showRemove = false,
-    VoidCallback? onRemove,
-  }) {
+  Widget _buildFriendItem(FriendModel friend) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatDetailScreen(
-                name: name,
-                status: status,
-                avatarColor: avatarColor,
-                isOnline: isOnline,
-                isGroup: false,
-              ),
-            ),
-          );
-        },
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Row(
+        children: [
+          Stack(
             children: [
-              // Avatar with online indicator
-              Stack(
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: avatarColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        name[0].toUpperCase(),
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: const Color(0xFF4A90E2),
+                backgroundImage: friend.profilePictureUrl != null && friend.profilePictureUrl!.isNotEmpty
+                    ? NetworkImage(friend.profilePictureUrl!)
+                    : null,
+                child: friend.profilePictureUrl == null || friend.profilePictureUrl!.isEmpty
+                    ? Text(
+                        friend.username[0].toUpperCase(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                    ),
-                  ),
-                  if (isOnline)
-                    Positioned(
-                      right: 2,
-                      bottom: 2,
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF10B981),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                      ),
-                    ),
-                ],
+                      )
+                    : null,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
+              if (friend.isOnline)
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF10B981),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        color: isOnline ? const Color(0xFF10B981) : const Color(0xFF9CA3AF),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (showRemove)
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEF4444).withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: onRemove,
-                    icon: const Icon(
-                      Icons.person_remove,
-                      color: Color(0xFFEF4444),
-                      size: 16,
-                    ),
-                    padding: EdgeInsets.zero,
                   ),
                 ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFriendRequestItem({
-    required String name,
-    required String message,
-    required Color avatarColor,
-    VoidCallback? onAccept,
-    VoidCallback? onReject,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: avatarColor,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  name[0].toUpperCase(),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  friend.fullName,
                   style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
+                const SizedBox(height: 4),
+                Text(
+                  friend.isOnline ? 'online' : 'offline',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: friend.isOnline ? const Color(0xFF10B981) : const Color(0xFF9CA3AF),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Color(0xFF6B7280)),
+            onSelected: (value) {
+              if (value == 'message') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatDetailScreen(
+                      name: friend.fullName,
+                      avatarColor: const Color(0xFF4A90E2),
+                      isOnline: friend.isOnline,
+                      isGroup: false,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    message,
-                    style: const TextStyle(
-                      color: Color(0xFF6B7280),
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Action buttons
-            Container(
-              width: 32,
-              height: 32,
-              margin: const EdgeInsets.only(right: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFEF4444).withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                onPressed: onReject,
-                icon: const Icon(
-                  Icons.close,
-                  color: Color(0xFFEF4444),
-                  size: 16,
+                );
+              } else if (value == 'unfriend') {
+                _unfriend(friend);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'message',
+                child: Row(
+                  children: [
+                    Icon(Icons.message, size: 20),
+                    SizedBox(width: 12),
+                    Text('bericht sturen'),
+                  ],
                 ),
-                padding: EdgeInsets.zero,
               ),
-            ),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: const Color(0xFF10B981).withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                onPressed: onAccept,
-                icon: const Icon(
-                  Icons.check,
-                  color: Color(0xFF10B981),
-                  size: 16,
+              const PopupMenuItem(
+                value: 'unfriend',
+                child: Row(
+                  children: [
+                    Icon(Icons.person_remove, color: Color(0xFFEF4444), size: 20),
+                    SizedBox(width: 12),
+                    Text('vriend verwijderen', style: TextStyle(color: Color(0xFFEF4444))),
+                  ],
                 ),
-                padding: EdgeInsets.zero,
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }

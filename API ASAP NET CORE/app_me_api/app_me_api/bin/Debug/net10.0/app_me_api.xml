@@ -20,6 +20,41 @@
             authenticates a user by checking their email and password. if correct, returns a jwt token that expires after 24 hours. you need to include this token in the authorization header for protected endpoints.
             </remarks>
         </member>
+        <member name="M:app_me_api.Controllers.FriendsController.SendFriendRequest(app_me_api.DTOs.FriendRequestDto)">
+            <summary>
+            Send friend request
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.FriendsController.GetPendingRequests">
+            <summary>
+            Get pending friend requests (received)
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.FriendsController.AcceptFriendRequest(System.Int32)">
+            <summary>
+            Accept friend request
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.FriendsController.RejectFriendRequest(System.Int32)">
+            <summary>
+            Reject friend request
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.FriendsController.GetFriends">
+            <summary>
+            Get friends list
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.FriendsController.Unfriend(System.Int32)">
+            <summary>
+            Unfriend a user
+            </summary>
+        </member>
+        <member name="M:app_me_api.Controllers.FriendsController.SearchUsers(System.String)">
+            <summary>
+            Search users
+            </summary>
+        </member>
         <member name="M:app_me_api.Controllers.UploadController.UploadProfilePicture(Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Upload profile picture
@@ -55,6 +90,18 @@
             <inheritdoc />
         </member>
         <member name="M:app_me_api.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_me_api.Migrations.AddFriendSystem">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddFriendSystem.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddFriendSystem.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_me_api.Migrations.AddFriendSystem.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:Program">
