@@ -33,6 +33,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   List<MessageModel> _messages = [];
   bool _isLoading = true;
   bool _isUserOnline = false;
+  DateTime? _lastSeenAt; // Add this for last seen timestamp
   int? _currentUserId;
   final SignalRService _signalR = SignalRService();
   Timer? _typingTimer;
@@ -138,6 +139,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       if (userId == widget.userId) {
         setState(() {
           _isUserOnline = isOnline;
+          // When user goes offline, record the time for "last seen"
+          if (!isOnline) {
+            _lastSeenAt = DateTime.now();
+          }
         });
       }
     };
@@ -494,7 +499,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     ),
                   ),
                   Text(
-                    _isUserOnline ? 'Online' : 'Offline',
+                    _isUserOnline 
+                        ? 'Online' 
+                        : 'Offline', // You can change this to show last seen later
                     style: TextStyle(
                       color: _isUserOnline ? const Color(0xFF10B981) : Colors.grey,
                       fontSize: 12,
@@ -509,7 +516,53 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           if (!widget.isGroup)
             IconButton(
               icon: const Icon(Icons.more_vert, color: Colors.black),
-              onPressed: () {},
+              onPressed: () {
+                // TODO: Show chat options menu
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return SafeArea(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.info_outline),
+                            title: const Text('Contact info'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              // TODO: Navigate to contact info screen
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.notifications_off_outlined),
+                            title: const Text('Mute notifications'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              // TODO: Implement mute functionality
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.delete_outline),
+                            title: const Text('Clear chat'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              // TODO: Implement clear chat
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.block, color: Colors.red),
+                            title: const Text('Block user', style: TextStyle(color: Colors.red)),
+                            onTap: () {
+                              Navigator.pop(context);
+                              // TODO: Implement block user
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
             ),
         ],
       ),

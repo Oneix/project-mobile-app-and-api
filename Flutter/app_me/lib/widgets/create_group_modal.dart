@@ -43,7 +43,7 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
         });
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error loading friends: $e')));
+        ).showSnackBar(SnackBar(content: Text('Fout bij laden van vrienden: $e')));
       }
     }
   }
@@ -58,14 +58,14 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
   Future<void> _createGroup() async {
     if (_groupNameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a group name')),
+        const SnackBar(content: Text('Voer een groepsnaam in')),
       );
       return;
     }
 
     if (_selectedFriendIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one friend')),
+        const SnackBar(content: Text('Selecteer minimaal één vriend')),
       );
       return;
     }
@@ -104,7 +104,7 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error creating group: $e'),
+            content: Text('Fout bij aanmaken van groep: $e'),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
             margin: const EdgeInsets.all(16),

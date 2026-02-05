@@ -1,13 +1,7 @@
 class ApiConstants {
-  // Base URL - Change this to your actual API URL when deploying
-  // For local testing on emulator: use 10.0.2.2 (Android) or localhost (iOS/Desktop)
+
   static const String baseUrl = 'http://localhost:5009';
   
-  // If using Android emulator, use:
-  // static const String baseUrl = 'http://10.0.2.2:5009';
-  
-  // If using physical device on same network, use your PC's IP:
-  // static const String baseUrl = 'http://192.168.x.x:5009';
   
   // API endpoints
   static const String apiPrefix = '/api';
@@ -20,12 +14,6 @@ class ApiConstants {
   // User endpoints
   static const String userBase = '$apiPrefix/user';
   static const String userProfile = '$userBase/profile';
-  
-  // Future endpoints (for reference)
-  // static const String friendsBase = '$apiPrefix/friends';
-  // static const String chatsBase = '$apiPrefix/chats';
-  // static const String messagesBase = '$apiPrefix/messages';
-  // static const String groupsBase = '$apiPrefix/groups';
   
   // Headers
   static Map<String, String> get headers => {
